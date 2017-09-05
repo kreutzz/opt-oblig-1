@@ -15,15 +15,15 @@ public class Opt_Oblig_1{
 		ArrayList<Integer> route = new ArrayList<Integer>();
 
 		fillArray(n, city_graph);
-		fillArray(n, connections);
+		//fillArray(n, connections);
 		printArray(n, city_graph);
 		randomMethod(n, connections, city_graph, route);
 		printArray(n, route);
 		printArray(n, connections);
-
+		calculateCost(n, route, city_graph);
 	}
 
-	public static void randomMethod(int n, int[] connections, int[][] array, ArrayList route){
+	public static void randomMethod(int n, int[] connections, int[][] array, ArrayList<Integer> route){
 		
 		Random random = new Random();
 		int random_city = random.nextInt(n);
@@ -38,9 +38,18 @@ public class Opt_Oblig_1{
 				connections[random_city] = 1;
 				route.add(random_city);
 				counter--;
-
 			}
 		}
+	}
+
+	public static void calculateCost(int n, ArrayList<Integer> route, int[][] array){
+		int cost = 0;
+
+		for(int i = 0; i < n -1; i++){
+			cost = cost + array[route.get(i)][route.get(i+1)];
+		}
+
+		System.out.println(cost);
 	}
 
 	public static void printArray(int n, int[] connections){
@@ -48,7 +57,7 @@ public class Opt_Oblig_1{
 				System.out.println(connections[i]);
 	}
 
-	public static void printArray(int n, ArrayList route){
+	public static void printArray(int n, ArrayList<Integer> route){
 		for(int i = 0; i < n; i++)
 			System.out.println("by " + route.get(i) + " til ");
 	}
@@ -61,14 +70,8 @@ public class Opt_Oblig_1{
 		}
 	}
 
-	public static void fillArray(int n, int[] array){
-
-		for(int i = 0; i < n ; i++)
-			array[i]=0;
-	}
-
 	public static void fillArray(int n, int[][] array){
-
+		//fills a two dimensional array with random numbers
 		Random random_number = new Random();
 		int temp = 0;
 
@@ -77,7 +80,6 @@ public class Opt_Oblig_1{
 			for(int column = 0; column < n; column++){
 				if(row == column)
 					array[row][column] = 0;
-
 				else if(array[row][column] > 0)
 					continue;
 				else{
