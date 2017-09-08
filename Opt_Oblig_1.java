@@ -81,9 +81,33 @@ public class Opt_Oblig_1{
 		System.out.println("kostnaden for Iterativ random er: " + cost);
 	}
 
-	public static void greedyMethod(){
-		
-		
+	public static void greedyMethod(int n,  int[] connections, int[][] array, ArrayList<Integer> route){
+		Random random = new Random();
+		route.clear();
+		fillArray(n, connections);
+		int min_cost = 11;
+		int random_city = random.nextInt(n);
+		int current_city = random_city;
+		int potential_next_city;
+		connections[random_city] = 1;
+
+		int counter = n-1;
+		route.add(random_city);
+
+		while(counter != 0){
+			for(int i = 0; i < n ; i++){
+				if(connections[i] == 0 && array[current_city][i] > 0 && array[current_city][i] > min_cost){
+					min_cost = array[current_city][i];
+					potential_next_city = i;
+				}
+
+			}
+			current_city = potential_next_city;
+			route.add(current_city);
+			connections[current_city] = 1;
+		}
+		printArray(n, route);
+		System.out.println("Kostnaden for greedy er: " + calculateCost(n, route, array));
 	}
 
 	public static int calculateCost(int n, ArrayList<Integer> route, int[][] array){
