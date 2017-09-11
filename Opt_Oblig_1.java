@@ -7,7 +7,7 @@ public class Opt_Oblig_1{
 	public static void main(String args[]){
 
 		Scanner read = new Scanner(System.in);
-		
+
 		System.out.println("enter a number: ");
 		int n = read.nextInt();					//n = amount of cities
 
@@ -16,7 +16,7 @@ public class Opt_Oblig_1{
 
 		ArrayList<Integer> route = new ArrayList<Integer>();
 		ArrayList<Integer> randomRoute = new ArrayList<Integer>();
-		ArrayList<Integer> iterativeRandomRoute = new ArrayList<Integer>();
+		ArrayList<Integer> iterativRandomRoute = new ArrayList<Integer>();
 		ArrayList<Integer> greedyRoute = new ArrayList<Integer>();
 
 		fillArray(n, city_graph);
@@ -29,12 +29,25 @@ public class Opt_Oblig_1{
 		//print out graph and cost for random method
 		printArray(n, route);
 		System.out.println("Kostnaden for Random er: " + calculateCost(n, route, city_graph));
-		
+		copyRoute(n, route, randomRoute);
+
 		//mewthod call for the iterative random method
 		iterativeRandomMethod(n, visited, city_graph, route);
+		copyRoute(n, route, iterativRandomRoute);
 
 		//method call for the greedy method
 		greedyMethod(n, visited, city_graph, route);
+		copyRoute(n, route, greedyRoute);
+
+		System.out.println("la oss forbedre Random");
+		improvementMethod(n, visited, city_graph, randomRoute);
+
+		System.out.println("la oss forbedre Iterativ Random");
+		improvementMethod(n, visited, city_graph, iterativRandomRoute);
+
+		System.out.println("la oss forbedre Greedy");
+		improvementMethod(n, visited, city_graph, greedyRoute);
+
 	}
 
 	public static void randomMethod(int n, int[] visited, int[][] array, ArrayList<Integer> route){
@@ -64,14 +77,14 @@ public class Opt_Oblig_1{
 		int cost = 0;
 		int temp_cost = 0;
 		int iterator = 0;
-		
+
 		route.clear();
-		
+
 		while (iterator != 5){
 			fillArray(n,visited);
 			randomMethod(n, visited, array, temp_route);
 			temp_cost = calculateCost(n, temp_route, array);
-			
+
 			if(temp_cost < cost){
 				route.clear();
 				cost = temp_cost;
@@ -87,25 +100,25 @@ public class Opt_Oblig_1{
 				}
 			}
 			iterator++;
-			printArray(n,route);
 			temp_route.clear();
 		}
-		System.out.println("kostnaden for Iterativ random er: " + cost);
+		printArray(n,route);
+		System.out.println("Kostnaden for Iterativ random er: " + cost);
 	}
 
 	public static void greedyMethod(int n,  int[] visited, int[][] array, ArrayList<Integer> route){
 		Random random = new Random();
-				
+
 		int min_cost = 11;					//initial cost of 11 as the max cost in the graph is 10
 		int current_city = random.nextInt(n);	//choose a random city to start in
 		int potential_next_city = 0;		//potential city to connect to next
-		int counter = n-1;				//counter to controll while loop 
-		
+		int counter = n-1;				//counter to controll while loop
+
 		fillArray(n, visited);		//reset array of visited cities
 		route.clear();				//reset route
 		route.add(current_city);	//add current city to the route
 		visited[current_city] = 1;		//mark that city has been visited/connected
-		
+
 		while(counter != 0){
 			for(int i = 0; i < n ; i++){
 				if(visited[i] == 0 && array[current_city][i] > 0 && array[current_city][i] < min_cost){
@@ -131,11 +144,15 @@ public class Opt_Oblig_1{
 		int city_2 = 0;
 		int iterator = 0;
 		int current_cost = calculateCost(n, route, array);
+		int new_cost = current_cost;
 
-		while(iterator < 100){
+		while(iterator < 10000000){
+			city_1 = random.nextInt(n);
+			city_2 = random.nextInt(n);
 
-			city_1 = random.nextInt();
-			city_2 = random.nextInt();
+			while(city_2 == city_1){
+				city_2 = random.nextInt(n);
+			}
 
 			for(int i = 0; i < n ; i++){
 				if(route.get(i) == city_1)
@@ -146,24 +163,29 @@ public class Opt_Oblig_1{
 					temp_route.add(route.get(i));
 			}
 
-			if(current_cost > calculateCost(n, temp_route, array))
-				route = temp_route;
+			new_cost = calculateCost(n, temp_route, array);
+
+			if(current_cost > new_cost){
+				System.out.println("new_cost er: " + new_cost);
+				copyRoute(n, temp_route, route);
+				current_cost = new_cost;
+			}
 
 			temp_route.clear();
 			iterator++;
 		}
+		System.out.println("ny vei: ");
 		printArray(n, route);
-		System.out.println("den nye kostnaden er: " + calculateCost(n, route, array));
+		System.out.println("Den nye kostnaden er: " + calculateCost(n, route, array));
 
 	}
 
 	public static int calculateCost(int n, ArrayList<Integer> route, int[][] array){
 		int cost = 0;
-		
+
 		for(int i = 0; i < n-1 ; i++){
 			cost = cost + array[route.get(i)][route.get(i+1)];
 		}
-
 		return cost;
 	}
 
@@ -198,7 +220,7 @@ public class Opt_Oblig_1{
 
 	public static void fillArray(int n, int[][] array){
 		//fills a two dimensional array with random numbers between 1 and 10
-		
+
 		Random random_number = new Random();
 		int temp = 0;
 
@@ -215,6 +237,13 @@ public class Opt_Oblig_1{
 					array[column][row] = temp;
 				}
 			}
+		}
+	}
+
+	public static void copyRoute(int n, ArrayList<Integer> old_route, ArrayList<Integer> new_route){
+		new_route.clear();
+		for(int i = 0; i < n; i++){
+			new_route.add(old_route.get(i));
 		}
 	}
 }
