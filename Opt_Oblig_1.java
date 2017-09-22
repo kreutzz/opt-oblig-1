@@ -15,7 +15,7 @@ public class Opt_Oblig_1{
 		int[] visited = new int[n];
 
 		ArrayList<Integer> route = new ArrayList<Integer>();
-		ArrayList<Integer> randomRoute = new ArrayList<Integer>();
+		//int[] randomRoute = new int[n];
 		ArrayList<Integer> iterativRandomRoute = new ArrayList<Integer>();
 		ArrayList<Integer> greedyRoute = new ArrayList<Integer>();
 
@@ -23,7 +23,7 @@ public class Opt_Oblig_1{
 
 		fillArray(n, city_graph);
 		fillArray(n, visited);
-		printArray(n, city_graph);
+		//printArray(n, city_graph);
 
 		//method call for the random method
 		long startTime = System.nanoTime();
@@ -34,7 +34,7 @@ public class Opt_Oblig_1{
 		//print out graph and cost for random method
 		//printArray(n, route);
 		System.out.println("Kostnaden for Random er: " + calculateCost(n, route, city_graph) + "\nog det tok " + time + "millisekunder");
-		copyRoute(n, route, randomRoute);
+		//copyRoute(n, route, randomRoute);
 		//printArray(n, randomRoute);
 
 		System.out.println("la oss forbedre Random");
@@ -80,7 +80,7 @@ public class Opt_Oblig_1{
 			}
 		}
 		route.add(route.get(0));
-		printArray(n, route);	
+		//printArray(n, route);
 	}
 
 	public static void iterativeRandomMethod(int n, int[] visited, int[][] array, ArrayList<Integer> route) {
@@ -115,7 +115,7 @@ public class Opt_Oblig_1{
 			System.out.println("temp_cost er: " + temp_cost);
 			temp_route.clear();
 		}
-		printArray(n,route);
+		//printArray(n,route);
 		//route.add(route.get(0));
 		System.out.println("Kostnaden for Iterativ random er: " + cost);
 	}
@@ -161,39 +161,32 @@ public class Opt_Oblig_1{
 		int current_cost = calculateCost(n, route, array);
 		int new_cost = current_cost;
 		int old_cost = current_cost;
+		int temp_city;
 
-		while(iterator < 100){
+		while(iterator < 500){
 			city_1 = random.nextInt(n);
 			city_2 = random.nextInt(n);
 
-			while(city_2 == city_1){
-				city_2 = random.nextInt(n);
+			if(city_1 != city_2){
+				temp_city = route.get(city_1);
+				route.set(city_1, route.get(city_2));
+				route.set(city_2, temp_city);
+
+				new_cost = calculateCost(n, route, array);
+
+				if(current_cost > new_cost){
+					current_cost = new_cost;
+					iterator=0;
+				}
+				else{
+					temp_city = route.get(city_1);
+					route.set(city_1, route.get(city_2));
+					route.set(city_2, temp_city);
+					iterator++;
+				}
 			}
 
-			for(int i = 0; i < n ; i++){
-				if(route.get(i) == city_1)
-					temp_route.add(city_2);
-				else if(route.get(i) == city_2)
-					temp_route.add(city_1);
-				else
-					temp_route.add(route.get(i));
-			}
-			temp_route.add(route.get(0));
-			new_cost = calculateCost(n, temp_route, array);
-
-			if(current_cost > new_cost){
-				copyRoute(n, temp_route, route);
-				current_cost = new_cost;
-				old_cost = current_cost;
-			}
-			temp_route.clear();
-			if(current_cost == old_cost)
-				iterator++;
-			else
-				iterator = 0;
 		}
-		//System.out.println("ny vei: ");
-		//printArray(n, route);
 		System.out.println("Den nye kostnaden er: " + calculateCost(n, route, array) + "\n");
 
 	}
@@ -202,7 +195,6 @@ public class Opt_Oblig_1{
 		int cost = 0;
 		int temp_cost = 0;
 
-		//System.out.println(route.size() + n);
 
 		for(int i = 0; i < n; i++){
 				cost = cost + array[route.get(i)][route.get(i+1)];
